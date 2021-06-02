@@ -49,10 +49,15 @@ const onClickOnAggregate = (e: any) => {
       for (const n of elem.childNodes) {
         const e = n as Element;
         if (e.nodeName === 'a' && e.hasAttribute('title')) {
+          const title = e.getAttribute('title');
           store.dispatch(
             filtersActions.addFilters({
               name: 'components',
-              value: e.getAttribute('title')?.split(';') ?? []
+              value:
+                title
+                  ?.substring(title.indexOf(')') + 1)
+                  .split(';')
+                  .map((cName) => cName.trim()) ?? []
             })
           );
 

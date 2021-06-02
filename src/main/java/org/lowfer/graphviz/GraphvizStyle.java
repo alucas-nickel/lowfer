@@ -24,6 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.lowfer.config.Color;
 import org.lowfer.domain.common.*;
 
+import java.text.MessageFormat;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.lowfer.graphviz.GraphType.DATA_FLOW;
 
@@ -117,9 +120,9 @@ public interface GraphvizStyle {
         final var attrs = new MapAttributes<>()
             .add("label", component.getLabel());
 
-        if (StringUtils.isNoneBlank(component.getDescription())) {
-            attrs.add("tooltip", component.getDescription());
-        }
+        final var maintainers = component.getMaintainers().stream().map(Maintainer::getName).collect(Collectors.joining(", "));
+        final var description = StringUtils.isNoneBlank(component.getDescription()) ? component.getDescription() : component.getName();
+        attrs.add("tooltip", MessageFormat.format("({0}) {1}", maintainers, description));
 
         switch (component.getType()) {
             case LIBRARY:
